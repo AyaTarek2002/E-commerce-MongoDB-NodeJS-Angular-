@@ -65,7 +65,7 @@ const uploadSingleImage = upload.single("image");
 
 const getProductByQuery = async (req, res) => {
   try {
-      const { id, name, price } = req.query;
+      const { name, price } = req.query;
 
       let query = {};
       if (name) query.name = { $regex: name, $options: "i" }; // Case-insensitive search
