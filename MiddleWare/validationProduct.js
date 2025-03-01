@@ -1,4 +1,4 @@
-import ProductSchema from "../validation/userValidation.js"
+import ProductSchema from "../validation/productValidation.js"
 
 export const validateProduct = (req, res, next) => {
     const validation = ProductSchema.validate(req.body, {abortEarly: false}); // abortEarly: false to get all errors

@@ -5,6 +5,7 @@ import { sendEmail } from "../../Email/Email.js";
 import { catchError } from "../../MiddleWare/catchError.js";
 export const signUp = catchError(
     async (req,res) => {
+    console.log("SignUp function called"); 
     req.body.password = bcrypt.hashSync(req.body.password, 8);
     if (req.body.role === "admin") {
         req.body.isConfirmed = true;
@@ -12,10 +13,11 @@ export const signUp = catchError(
         req.body.isConfirmed = false;
     }
     const addUser = await userModel.insertMany(req.body);// insertMany return an Array of object
-    if(req.body.role === "customer")
-        {
-             sendEmail(req.body.email)
-        }
+    if (req.body.role === "customer") {
+        await sendEmail(req.body.email);   
+         console.log("Sending email to:", req.body.email); 
+
+    }
     addUser[0].password = undefined;// remove password from the response
     res.status(201).json({message:"done", addUser});// 201 status code is used for created
 })
@@ -44,7 +46,6 @@ export const verifyEmail =  (req,res) => {
         }
         const email = decoded;
         await userModel.findOneAndUpdate({email: email}, {isConfirmed: true})
-
         res.json({message: "Email verified"})
     })
 }

@@ -69,7 +69,7 @@ export function emailTemplate(email) {
                                               <table border="0" cellspacing="0" cellpadding="0">
                                                   <tr>
                                                       <td align="left" style="border-radius: 3px;" bgcolor="#426899">
-                                                          <a href="http://localhost:3000/users/verify/${email}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 11px 22px; border-radius: 2px; border: 1px solid #426899; display: inline-block;">Verify</a>
+                                                          <a href="http://localhost:3030/customer/verify/${email}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 11px 22px; border-radius: 2px; border: 1px solid #426899; display: inline-block;">Verify</a>
                                                       </td>
                                                   </tr>
                                               </table>

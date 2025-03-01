@@ -24,7 +24,7 @@ const userSchema = Joi.object({
   .messages({
     "string.pattern.base": "Invalid phone number",
   }),
-  role: Joi.string().valid("user", "admin").default("user"),
+  role: Joi.string().valid("customer", "admin").default("user"),
   isConfirmed: Joi.boolean().default(false),
   walletBalance: Joi.number().default(0),
 });

@@ -3,7 +3,8 @@ import { catchError } from "../../MiddleWare/catchError.js";
 import multer from "multer";
 import path from "path";
 
-const getProduct = async (req, res) => {
+const getProduct = catchError(
+async (req, res) => {
   if (!req.user) {
       return res.status(401).json({ message: "Unauthorized: User not authenticated" });
   }
@@ -14,7 +15,7 @@ const getProduct = async (req, res) => {
   } else {
       res.status(403).json({ message: "Forbidden: Only admins can access this resource" });
   }
-};
+});
 
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -30,7 +31,6 @@ const upload = multer({ storage: storage });
 
 // Create Product Function
 const createProduct = catchError(async (req, res) => {
-  console.log("Uploaded File:", req.file);
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized: User not authenticated" });
   }
@@ -63,4 +63,24 @@ if (existingProduct) {
 // Middleware for handling single image upload
 const uploadSingleImage = upload.single("image");
 
-export { getProduct, createProduct, uploadSingleImage };
+const getProductByQuery = async (req, res) => {
+  try {
+      const { id, name, price } = req.query;
+
+      let query = {};
+      if (name) query.name = { $regex: name, $options: "i" }; // Case-insensitive search
+      if (price) query.price = price;
+
+      const products = await productModel.find(query);
+
+      if (products.length === 0) {
+          return res.status(404).json({ message: "No products found." });
+      }
+
+      return res.status(200).json({ products });
+  } catch (error) {
+      return res.status(500).json({ message: "Server error.", error: error.message });
+  }
+};
+
+export { getProduct, createProduct, uploadSingleImage, getProductByQuery };
