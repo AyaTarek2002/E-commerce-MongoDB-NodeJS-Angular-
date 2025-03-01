@@ -20,7 +20,7 @@ async (req, res) => {
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve("images"));
+    cb(null,  path.join("uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -31,6 +31,7 @@ const upload = multer({ storage: storage });
 
 // Create Product Function
 const createProduct = catchError(async (req, res) => {
+  console.log(req.file);
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized: User not authenticated" });
   }
