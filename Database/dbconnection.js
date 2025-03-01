@@ -1,6 +1,4 @@
-
 import mongoose from "mongoose";
-
-export const myConnection = mongoose.connect("mongodb://127.0.0.1:27017/nodeProject")
-.then(() => console.log("Connected to MongoDB"))
-.catch((err) => console.log(err.message));
+export const myConnection = mongoose.connect("mongodb://localhost:27017/nodeProject")
+.then(console.log("connected successfully"))
+.catch((err)=>console.log(err));
