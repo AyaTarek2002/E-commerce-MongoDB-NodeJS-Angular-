@@ -1,5 +1,6 @@
 import { productModel } from "../../Database/Models/product.model.js";
 import { catchError } from "../../MiddleWare/catchError.js";
+import { ProductUpdateSchema } from "../../validation/productValidation.js";
 import multer from "multer";
 import path from "path";
 
@@ -83,5 +84,51 @@ const getProductByQuery = async (req, res) => {
       return res.status(500).json({ message: "Server error.", error: error.message });
   }
 };
+// Edit product by id
 
-export { getProduct, createProduct, uploadSingleImage, getProductByQuery };
+const updateProductById = async (req, res) => {
+  let productId = req.params.id;
+  let updatedProduct = await productModel.findOne({ _id: productId });
+
+  if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+  }
+
+  if (req.user.role === "admin") {
+     
+      const { error, value } = ProductUpdateSchema.validate(req.body, { abortEarly: false });
+      if (error) {
+          return res.status(400).json({ message: "Validation error", errors: error.details });
+      }
+
+     
+      if (req.file) {
+          value.image = `/images/${req.file.filename}`;
+      }
+
+      updatedProduct = await productModel.findByIdAndUpdate(productId, value, { new: true });
+      res.json({ message: "Updated product", updatedProduct });
+  } else {
+      res.json({ message: "Not allowed to update" });
+  }
+};
+
+// delete product by id
+const deleteProductById = async (req, res) => {
+  let productId = req.params.id;
+  let product = await productModel.findOne({ _id: productId });
+
+  if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+  }
+
+  if (req.user.role === "admin") {
+      await productModel.findByIdAndDelete(productId);
+      res.json({ message: "Deleted product successfully" });
+  } else {
+      res.json({ message: "Not allowed to delete" });
+  }
+};
+
+
+export { getProduct, createProduct, uploadSingleImage, getProductByQuery,updateProductById ,deleteProductById};

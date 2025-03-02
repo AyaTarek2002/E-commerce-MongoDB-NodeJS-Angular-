@@ -1,5 +1,5 @@
 import express from "express";
-import  myConnection  from "./Database/dbconnection.js";
+import myConnection from "./Database/dbconnection.js";
 import customerRoute from './Modules/User/user.route.js';
 import ProductRoute from './Modules/Product/product.route.js';
 import path from "path";
@@ -17,6 +17,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 myConnection
 
-app.listen(4000, function(){
+app.listen(3030, function(){
     console.log("Server is running on port 3000");
 });
