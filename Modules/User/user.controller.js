@@ -13,7 +13,7 @@ export const signUp = catchError(
     } else {
         req.body.isConfirmed = false;
     }
-    const addUser = await userModel.insertMany(req.body);// insertMany return an Array of object
+    const addUser = await userModel.insertMany(req.body);//insertMany return an Array of object
     if (req.body.role === "customer") {
         await sendEmail(req.body.email);   
          console.log("Sending email to:", req.body.email); 
@@ -22,7 +22,6 @@ export const signUp = catchError(
     addUser[0].password = undefined;// remove password from the response
     res.status(201).json({message:"done", addUser});// 201 status code is used for created
 })
-
 //Login
 export const login = catchError(
 async (req,res)=>
@@ -100,7 +99,6 @@ export const deleteUser = catchError(async (req, res) =>
 //verifyEmail
 export const verifyEmail =  (req,res) => {
     const token = req.params.email
-    console.log(token)
     jwt.verify(token, "myemail",async (err, decoded) => {
         if(err){
          return res.status(401).json({message: "Invalid token"})
