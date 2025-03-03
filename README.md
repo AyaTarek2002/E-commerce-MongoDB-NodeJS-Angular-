@@ -45,9 +45,22 @@ This is an e-commerce application built using the MEAN stack (MongoDB, Express.j
 - Angular CLI (v12 or higher)
 - MongoDB (v4.4 or higher)
 - Git
+- 
+## Presentation
+A presentation demonstrating the project features and discussing the technologies used is available [here]...
+
+## Demo
+A live demo of the application is available ....
+
+## Contributors
+- Aya Tarek(https://github.com/AyaTarek2002)
+- Aliaa Hesham(https://github.com/aliaa11)
+- Salma Hussin(https://github.com/)
+- Arwa Emam(https://github.com/arwaemam2)
 
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/mean-ecommerce-project.git
-cd mean-ecommerce-project
+git clone https://github.com/AyaTarek2002/E-commerce-MongoDB-NodeJS-Angular-.git
+cd E-commerce-MongoDB-NodeJS-Angular-
+
