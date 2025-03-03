@@ -45,7 +45,7 @@ This is an e-commerce application built using the MEAN stack (MongoDB, Express.j
 - Angular CLI (v12 or higher)
 - MongoDB (v4.4 or higher)
 - Git
-- 
+
 ## Presentation
 A presentation demonstrating the project features and discussing the technologies used is available [here]...
 
