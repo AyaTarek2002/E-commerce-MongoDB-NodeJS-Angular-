@@ -57,6 +57,9 @@ A live demo of the application is available ....
 - Aliaa Hesham(https://github.com/aliaa11)
 - Salma Hussin(https://github.com/)
 - Arwa Emam(https://github.com/arwaemam2)
+## ERD
+
+![Screenshot from 2025-03-01 14-02-09](https://github.com/user-attachments/assets/b81114af-19da-4120-96bb-6e1b88075ec1)
 
 ### Step 1: Clone the Repository
 
