@@ -100,7 +100,32 @@ const updateCart = catchError(
         });
     }
 )
+const removeFromCart = catchError(async (req, res) => {
+    const { productId } = req.body;
+    const userId = req.user.id;
+
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized, User ID is missing." });
+    }
+
+    const cart = await CartModel.findOne({ userId });
+
+    if (!cart) {
+        return res.status(404).json({ message: "Cart not found." });
+    }
+
+    const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+
+    if (itemIndex === -1) {
+        return res.status(404).json({ message: "Product not found in cart." });
+    }
+
+    cart.items.splice(itemIndex, 1);
+    await cart.save();
+
+    res.status(200).json({ message: "Product removed from cart successfully.", cart });
+});
 
 
-export { addToCart , updateCart};
+export { addToCart , updateCart,removeFromCart};
 
