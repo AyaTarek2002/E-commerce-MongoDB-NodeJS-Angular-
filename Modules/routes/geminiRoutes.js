@@ -5,7 +5,6 @@ import { catchError } from "../../MiddleWare/catchError.js";
 
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-console.log("GOOGLE_API_KEY:", process.env.GOOGLE_API_KEY);
 
 export const chatWith = catchError(async (req, res) => {
     const { prompt: userQuestion } = req.body;
@@ -15,7 +14,8 @@ export const chatWith = catchError(async (req, res) => {
     }
     const allowedTopics = ["shopping", "payment", "return", "delivery", "تسوق", "دفع", "إرجاع", "توصيل"];
 
-    const isQuestionAllowed = allowedTopics.some(topic => userQuestion.toLowerCase().includes(topic.toLowerCase()));    if (!isQuestionAllowed) {
+    const isQuestionAllowed = allowedTopics.some(topic => userQuestion.toLowerCase().includes(topic.toLowerCase()));    
+    if (!isQuestionAllowed) {
         return res.json({ reply: "Sorry, this question is outside my scope of assistance." });
     }
     const isArabic = /[\u0600-\u06FF]/.test(userQuestion); 

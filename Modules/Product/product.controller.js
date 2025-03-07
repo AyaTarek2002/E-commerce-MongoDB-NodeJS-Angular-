@@ -86,7 +86,6 @@ const getProductByQuery = async (req, res) => {
   }
 };
 // Edit product by id
-
 const updateProductById = async (req, res) => {
   let productId = req.params.id;
   let updatedProduct = await productModel.findOne({ _id: productId });
@@ -96,15 +95,17 @@ const updateProductById = async (req, res) => {
   }
 
   if (req.user.role === "admin") {
-     
       const { error, value } = ProductUpdateSchema.validate(req.body, { abortEarly: false });
       if (error) {
           return res.status(400).json({ message: "Validation error", errors: error.details });
       }
 
-     
       if (req.file) {
           value.image = `/images/${req.file.filename}`;
+      }
+
+      if (value.stock !== undefined) {
+          updatedProduct.stock = value.stock;
       }
 
       updatedProduct = await productModel.findByIdAndUpdate(productId, value, { new: true });
@@ -113,7 +114,6 @@ const updateProductById = async (req, res) => {
       res.json({ message: "Not allowed to update" });
   }
 };
-
 // delete product by id
 const deleteProductById = async (req, res) => {
   let productId = req.params.id;

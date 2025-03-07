@@ -10,6 +10,7 @@ const userSchema = Schema({
         enum:["admin" , "customer"],
         default:"customer"
     },
+    status: { type: String, enum: ["active", "restricted" , "panned"], default: "active" },
     isConfirmed:
     {
         type:Boolean,
