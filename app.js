@@ -24,6 +24,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 
 myConnection
 
-app.listen(5000, function(){
+app.listen(3300, function(){
     console.log("Server is running on port 3030");
 });

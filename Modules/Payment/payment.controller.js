@@ -20,21 +20,22 @@ export const createPaymentIntent = catchError(async (req, res) => {
         return res.status(403).json({ message: "You are restricted, you cannot make payments." });
     }
 
-    const cart = await CartModel.findOne({ userId }); 
-    if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ message: "Cart is empty." });
+    if (!req.body.products || !Array.isArray(req.body.products)) {
+        return res.status(400).json({ message: "Invalid products data." });
     }
 
-    const totalAmount = cart.items.reduce((total, item) => total + item.totalPrice, 0);
-
-    for (const item of cart.items) {
+    let totalAmount = 0;
+    for (const item of req.body.products) {
         const product = await productModel.findById(item.productId);
         if (!product) {
             return res.status(404).json({ message: `Product with ID ${item.productId} not found.` });
         }
         if (product.stock < item.quantity) {
-            return res.status(400).json({ message: `Insufficient stock for product: ${product.name}.` });
+            return res.status(400).json({ 
+                message: `Insufficient stock for product: ${product.name}. Available stock: ${product.stock}` 
+            });
         }
+        totalAmount += product.price * item.quantity;
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
@@ -45,18 +46,37 @@ export const createPaymentIntent = catchError(async (req, res) => {
 
     const paymentRecord = await PaymentModel.create({
         userId,
+        products: req.body.products,
         amount: totalAmount,
         method: "Stripe",
         status: "Pending"
     });
- 
-    for (const item of cart.items) {
+
+    const cart = await CartModel.findOne({ userId });
+    //Update Cart After Payment
+    if (cart) {
+        for (const purchasedItem of req.body.products) {
+            const cartItem = cart.items.find(item => 
+                item.productId.toString() === purchasedItem.productId.toString()
+            );
+            if (cartItem) {
+                cartItem.quantity -= purchasedItem.quantity;
+                if (cartItem.quantity <= 0) {
+                    cart.items = cart.items.filter(item => 
+                        item.productId.toString() !== purchasedItem.productId.toString()
+                    );
+                }
+            }
+        }
+        await cart.save();   
+    }
+
+    for (const item of req.body.products) {
         const product = await productModel.findById(item.productId);
         product.stock -= item.quantity;
         await product.save();
     }
 
-    await CartModel.findOneAndDelete({ userId });
 
     res.status(200).json({ 
         success: true,
