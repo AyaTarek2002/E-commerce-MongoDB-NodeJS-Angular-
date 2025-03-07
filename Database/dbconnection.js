@@ -6,4 +6,4 @@ const myConnection =  mongoose.connect("mongodb+srv://Aliaa:12345@cluster0.q5izj
 }).then(console.log("✅ MongoDB Connected Successfully!"))
 .catch((err)=>console.log(err));
 
-export default myConnection; 
+export default myConnection;
