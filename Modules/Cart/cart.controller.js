@@ -58,6 +58,30 @@ const addToCart = async (req, res) => {
     }
 };
 
+const getCart = async (req, res) => {
+    try {
+        const userId = req.user.id; 
+        
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized. User ID is missing." });
+        }
+
+        const cart = await CartModel.findOne({ userId }).populate("items.productId", "name price stock");
+
+        if (!cart || cart.items.length === 0) {
+            return res.status(404).json({ message: "Cart is empty." });
+        }
+
+        res.status(200).json({ message: "Cart retrieved successfully.", cart });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving cart.", error: error.message });
+    }
+};
+
+export { getCart };
+
+
 
 
 export {addToCart};
