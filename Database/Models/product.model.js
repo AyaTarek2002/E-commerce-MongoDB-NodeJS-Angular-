@@ -1,3 +1,4 @@
+import joi from "joi";
 import { Schema,model } from "mongoose";
 
 export const ProductSchema = Schema({
@@ -7,6 +8,26 @@ export const ProductSchema = Schema({
     stock: Number, //default 0
     category: String,
     image: String,
+    ratings:[
+        {
+            userId:{
+                type:Schema.Types.ObjectId,
+                ref:"customer",
+                required:true,
+            },
+            rating:{
+                type:Number,
+                required:true,
+                min:1,
+                max:5,
+            },
+            comment:String,
+        },
+    ],
+    averageRating:{
+        type:Number,
+        default:0,
+    },
 },
 {
     timestamps: true
