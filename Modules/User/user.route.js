@@ -1,5 +1,5 @@
 import express from 'express';
-import { signUp ,resetPassword,login,forgotPassword,updateUserDetails, verifyEmail ,deleteUser,restrictUser,getUserProfile} from '../User/user.controller.js';
+import { signUp ,login,forgotPassword,resetPassword,updateUserDetails, verifyEmail ,deleteUser,restrictUser,getUserProfile} from '../User/user.controller.js';
 import { EmailCheck } from '../../MiddleWare/EmailChecked.js';
 import { validateUser , validateData } from "../../MiddleWare/validationUser.js";
 import { verifyToken } from '../../MiddleWare/verifyToken.js';

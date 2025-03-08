@@ -13,7 +13,8 @@ app.use(express.json());
 app.use('/customer', customerRoute);
 app.use('/product', ProductRoute);
 app.use("/review", ReviewRoute);
-app.use('/cart',CartRoute);export const restrictUser = (req, res, next) => {
+app.use('/cart',CartRoute);
+export const restrictUser = (req, res, next) => {
     if (req.user && req.user.status === "restricted") {
         const allowedRoutes = ["/customer/login", "/customer/profile"];
 
