@@ -164,11 +164,9 @@ const removeFromCart = catchError(async (req, res) => {
 const getUserCartById = catchError(async (req, res) => {
     const { userId } = req.params; 
     const requesterRole = req.user.role; 
-
     if (requesterRole !== "admin") {
         return res.status(403).json({ message: "Access denied. Admins only." });
     }
-
     const cart = await CartModel.findOne({ userId }).populate('items.productId');
     if (!cart) {
         return res.status(404).json({ message: "Cart not found." });

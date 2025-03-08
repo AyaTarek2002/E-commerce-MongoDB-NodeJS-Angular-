@@ -10,7 +10,6 @@ async (req, res) => {
   if (!req.user) {
       return res.status(401).json({ message: "Unauthorized: User not authenticated" });
   }
-
   if (req.user.role === "admin") {
       const allProducts = await productModel.find();
       res.status(200).json({ message: "All Products: ", allProducts });
@@ -18,7 +17,6 @@ async (req, res) => {
       res.status(403).json({ message: "Forbidden: Only admins can access this resource" });
   }
 });
-
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -28,9 +26,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-
 const upload = multer({ storage: storage });
-
 // Create Product Function
 const createProduct = catchError(async (req, res) => {
   console.log(req.file);
@@ -62,11 +58,10 @@ if (existingProduct) {
   const newProduct = await productModel.create(req.body);
   res.status(201).json({ message: "Product created successfully", newProduct });
 });
-
 // Middleware for handling single image upload
 const uploadSingleImage = upload.single("image");
 
-const getProductByQuery = async (req, res) => {
+const getProductByQuery = catchError(async (req, res) => {
   try {
       const { name, price } = req.query;
 
@@ -84,9 +79,9 @@ const getProductByQuery = async (req, res) => {
   } catch (error) {
       return res.status(500).json({ message: "Server error.", error: error.message });
   }
-};
+});
 // Edit product by id
-const updateProductById = async (req, res) => {
+const updateProductById = catchError(async (req, res) => {
   let productId = req.params.id;
   let updatedProduct = await productModel.findOne({ _id: productId });
 
@@ -113,9 +108,9 @@ const updateProductById = async (req, res) => {
   } else {
       res.json({ message: "Not allowed to update" });
   }
-};
+});
 // delete product by id
-const deleteProductById = async (req, res) => {
+const deleteProductById = catchError(async (req, res) => {
   let productId = req.params.id;
   let product = await productModel.findOne({ _id: productId });
 
@@ -129,7 +124,7 @@ const deleteProductById = async (req, res) => {
   } else {
       res.json({ message: "Not allowed to delete" });
   }
-};
+});
 
 
 export { getProduct, createProduct, uploadSingleImage, getProductByQuery,updateProductById ,deleteProductById};

@@ -111,20 +111,12 @@ export const verifyEmail =  (req,res) => {
 
 // Get all users (Admin only)
 export const getAllUsers = catchError(async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Unauthorized access" });
-    }
-
     const users = await userModel.find({}, { password: 0 }); // Exclude passwords
     res.status(200).json({ message: "All users retrieved successfully", users });
 });
 
 // Get user by ID (Admin only)
 export const getUserById = catchError(async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Unauthorized access" });
-    }
-
     const user = await userModel.findById(req.params.id, { password: 0 }); // Exclude password
     if (!user) {
         return res.status(404).json({ message: "User not found" });

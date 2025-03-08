@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 import ChatRoute from "./Modules/routes/geminiRoutes.route.js";
 import stripeRouter from './Modules/Payment/payment.route.js';
 import orderRoutes from './Modules/orderHistory/order.route.js';
-
+import  promoCodeRoute  from './Modules/promoCode/promocode.route.js';
 const app = express();
 app.use(express.json());
 
@@ -20,6 +20,7 @@ app.use('/cart',CartRoute);
 app.use("/gemini", ChatRoute);
 app.use('/pay', stripeRouter);
 app.use('/order-summary', orderRoutes);
+app.use('/promoCode',promoCodeRoute);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
