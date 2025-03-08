@@ -160,6 +160,39 @@ const removeFromCart = catchError(async (req, res) => {
         }
     });
 });
+//get user by id (admin)
+const getUserCartById = catchError(async (req, res) => {
+    const { userId } = req.params; 
+    const requesterRole = req.user.role; 
 
-export { addToCart , updateCart,removeFromCart,getUserCart};
+    if (requesterRole !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
+    const cart = await CartModel.findOne({ userId }).populate('items.productId');
+    if (!cart) {
+        return res.status(404).json({ message: "Cart not found." });
+    }
+
+    const formattedItems = cart.items.map(item => ({
+        productId: item.productId._id,
+        name: item.productId.name,
+        price: item.productId.price,
+        quantity: item.quantity,
+        totalPrice: item.productId.price * item.quantity,
+        _id: item._id
+    }));
+
+    res.status(200).json({
+        success: true,
+        cart: {
+            ...cart.toObject(), 
+            items: formattedItems 
+        }
+    });
+});
+
+
+
+export { addToCart , updateCart,removeFromCart,getUserCart,getUserCartById};
 

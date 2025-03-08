@@ -84,3 +84,28 @@ export const createPaymentIntent = catchError(async (req, res) => {
         paymentId: paymentRecord._id
     });
 });
+// get all payment (admin)
+export const getAllPayments = catchError(async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Unauthorized access" });
+    }
+
+    const payments = await PaymentModel.find({});
+    res.status(200).json({ message: "All payments retrieved successfully", payments });
+});
+
+// get payment bu user id (admin)
+export const getPaymentsByUserId = catchError(async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Unauthorized access" });
+    }
+
+    const userId = req.params.userId;
+    const payments = await PaymentModel.find({ userId });
+
+    if (!payments.length) {
+        return res.status(404).json({ message: "No payments found for this user" });
+    }
+
+    res.status(200).json({ message: "User payments retrieved successfully", payments });
+});
