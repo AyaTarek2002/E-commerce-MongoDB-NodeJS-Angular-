@@ -9,6 +9,7 @@ import CartRoute from './Modules/Cart/cart.route.js';
 import { fileURLToPath } from "url";
 import ChatRoute from "./Modules/routes/geminiRoutes.route.js";
 import stripeRouter from './Modules/Payment/payment.route.js';
+import orderRoutes from './Modules/orderHistory/order.route.js';
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,8 @@ app.use('/product', ProductRoute);
 app.use('/cart',CartRoute);
 app.use("/gemini", ChatRoute);
 app.use('/pay', stripeRouter);
+app.use('/order-summary', orderRoutes);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/images", express.static(path.join(__dirname, "images")));

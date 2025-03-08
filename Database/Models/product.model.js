@@ -12,3 +12,4 @@ export const ProductSchema = Schema({
     timestamps: true
 });
 export const productModel = model('Product',ProductSchema);  //export the model
+export default productModel;
