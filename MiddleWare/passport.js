@@ -6,25 +6,14 @@ import { userModel } from "../Database/Models/user.model.js";
 import dotenv from "dotenv";
 
 dotenv.config();
-// إنشاء توكن JWT
 const generateToken = (user) => {
     return jwt.sign(
         { id: user._id, email: user.email, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: "7d" } // التوكن صالح لمدة 7 أيام
+        { expiresIn: "7d" } 
     );
 };
-// تسجيل المستخدم في الجلسة
-// passport.serializeUser((user, done) => {
-//     done(null, user.id);
-// });
 
-// passport.deserializeUser(async (id, done) => {
-//     const user = await userModel.findById(id);
-//     done(null, user);
-// });
-
-// إعداد Google Strategy
 passport.use(
     new GoogleStrategy(
         {
@@ -54,7 +43,6 @@ passport.use(
     )
 );
 
-// إعداد Facebook Strategy
 passport.use(
     new FacebookStrategy(
         {

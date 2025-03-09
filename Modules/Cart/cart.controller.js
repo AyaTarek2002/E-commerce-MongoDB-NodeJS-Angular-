@@ -107,7 +107,6 @@ const updateCart = catchError(
         });
     }
 )
-//remove Cart
 
 const removeFromCart = catchError(async (req, res) => {
     const { productId } = req.body;
@@ -134,7 +133,6 @@ const removeFromCart = catchError(async (req, res) => {
 
     res.status(200).json({ message: "Product removed from cart successfully.", cart });
 });
-//get all Cart
 
  const getUserCart = catchError(async (req, res) => {
     const userId = req.user.id;

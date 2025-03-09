@@ -18,10 +18,8 @@ customerRoute.put('/restrict-user/:userId', verifyToken, isAdmin, restrictUser);
 customerRoute.post("/forgot-password", forgotPassword);
 customerRoute.post("/reset-password/:token", resetPassword);
 
-// تسجيل الدخول عبر Google
 customerRoute.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-// مسار إعادة التوجيه بعد نجاح تسجيل الدخول من Google
 customerRoute.get(
     "/auth/google/callback",
     passport.authenticate("google", { session: false }),
@@ -34,10 +32,8 @@ customerRoute.get(
     }
 );
 
-// تسجيل الدخول عبر Facebook
 customerRoute.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email"] }));
 
-// مسار إعادة التوجيه بعد نجاح تسجيل الدخول من Facebook
 customerRoute.get(
     "/auth/facebook/callback",
     passport.authenticate("facebook", { session: false}),

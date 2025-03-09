@@ -10,11 +10,9 @@ async (req, res) => {
   if (!req.user) {
       return res.status(401).json({ message: "Unauthorized: User not authenticated" });
   }
- 
-      const allProducts = await productModel.find();
-      res.status(200).json({ message: "All Products: ", allProducts });
- 
-      res.status(403).json({ message: "Forbidden: Only admins can access this resource" });
+    const allProducts = await productModel.find();
+    res.status(200).json({ message: "All Products: ", allProducts });
+    res.status(403).json({ message: "Forbidden: Only admins can access this resource" });
   
 });
 // Configure multer storage

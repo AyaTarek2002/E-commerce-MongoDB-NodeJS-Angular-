@@ -48,7 +48,6 @@ export const deleteReview = catchError(async (req, res) => {
         return res.status(401).json({ message: "User not found!" });
     }
 
-    // 🔹 يمكن للـ admin أو صاحب المراجعة حذفها
     if (review.user.toString() !== userId && user.role !== "admin") {
         return res.status(403).json({ message: "You are not authorized to delete this review!" });
     }
@@ -57,7 +56,6 @@ export const deleteReview = catchError(async (req, res) => {
     res.status(200).json({ message: "Review deleted successfully!" });
 });
 
-// 📌 جلب كل التقييمات الخاصة بمنتج معين
 export const getProductReviews = catchError(async (req, res) => {
     const { productId } = req.params;
 

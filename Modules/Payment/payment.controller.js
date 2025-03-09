@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = catchError(async (req, res) => {
     const userId = req.user.id;
-    const { products, promoCode } = req.body; 
+    const { products, promoCode } = req.body; //products => Array of Product
 
     const user = await userModel.findById(userId);
     if (!user) {
@@ -53,11 +53,11 @@ export const createPaymentIntent = catchError(async (req, res) => {
             return res.status(400).json({ message: "Promo code has reached its maximum usage limit." });
         }
 
-        discountAmount = (totalAmount * promo.discountPercentage) / 100;
+        discountAmount = (totalAmount * promo.discountPercentage) / 100; //(20%*1500)/100 = 1500-300 = 1200
         totalAmount -= discountAmount;
 
-        promo.usedCount += 1;
-        await promo.save();
+        promo.usedCount += 1; //=>3 +1
+        await promo.save(); //4
     }
 
     const paymentIntent = await stripe.paymentIntents.create({

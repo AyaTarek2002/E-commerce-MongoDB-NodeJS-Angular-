@@ -113,6 +113,4 @@ const getAllRatings = async (req, res) => {
     }
 };
 
-// export { postRating, getRatingByProductID, deleteRating, getAllRatings };
-
 export { postRating,getRatingByProductID,deleteRating,getAllRatings };

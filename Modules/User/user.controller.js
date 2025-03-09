@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {userModel} from "../../Database/Models/user.model.js";
-import { sendEmail } from "../../Email/email.js";
+import { sendEmail } from "../../Email/Email.js";
 import { catchError } from "../../MiddleWare/catchError.js";
 
 
@@ -35,9 +35,9 @@ async (req,res)=>
             name: foundUser.name,
             role: foundUser.role
         },
-        process.env.JWT_SECRET, // استخدام المفتاح السري من `.env`
-        { expiresIn: "7d" } // صلاحية التوكن 7 أيام
-    ); // secret key is used to sign the token and it's name is hello
+        process.env.JWT_SECRET, 
+        { expiresIn: "7d" } 
+    ); 
         
         res.status(200).json({message:`welcome ${foundUser.name}`, token});
     }else{
@@ -54,13 +54,10 @@ export const forgotPassword = catchError(async (req, res) => {
         return res.status(404).json({ message: "User not found" });
     }
 
-    // إنشاء توكين صالح لمدة ساعة
     const token = jwt.sign({ id: user._id }, "mySecretKey", { expiresIn: "1h" });
 
-    // إنشاء رابط إعادة التعيين متضمناً التوكين
     const resetLink = `http://localhost:3000/reset-password/${token}`;
 
-    // طباعة الرابط في الكونسول بدلاً من إرسال بريد إلكتروني
     console.log(`🔗 Password Reset Link: ${resetLink}`);
 
     res.status(200).json({
@@ -70,20 +67,17 @@ export const forgotPassword = catchError(async (req, res) => {
 });
 //resetPassword
 export const resetPassword = catchError(async (req, res) => {
-    const { token } = req.params; // استلام التوكين من الـ URL
-    const { newPassword } = req.body; // استلام كلمة المرور الجديدة
+    const { token } = req.params; 
+    const { newPassword } = req.body;
 
     try {
-        // فك تشفير التوكين
         const decoded = jwt.verify(token, "mySecretKey");
 
-        // البحث عن المستخدم بناءً على ID المخزن في التوكين
         const user = await userModel.findById(decoded.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // تحديث كلمة المرور بعد تشفيرها
         user.password = bcrypt.hashSync(newPassword, 8);
         await user.save();
 
@@ -153,7 +147,7 @@ export const deleteUser = catchError(async (req, res) =>
 //verifyEmail
 export const verifyEmail =  (req,res) => {
     const token = req.params.email
-    jwt.verify(token, "myemail",async (err, decoded) => {
+    jwt.verify(token,process.env.EMAIL_SECRET,async (err, decoded) => {
         if(err){
          return res.status(401).json({message: "Invalid token"})
         }
@@ -179,7 +173,6 @@ export const getUserById = catchError(async (req, res) => {
     res.status(200).json({ message: "User retrieved successfully", user });
 });
 
-//restrictUserByAdmin
 export const restrictUser = catchError(async (req, res) => {
     const { userId } = req.params;
     const { status } = req.body; // "restricted" أو "banned"

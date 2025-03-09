@@ -6,7 +6,6 @@ import { restrictUser } from "../../MiddleWare/restrictUser.js";
 
 const CartRoute = express.Router();
 
-//CartRoute.use(verifyToken)
 CartRoute.post("/add",verifyToken,restrictUser,addToCart);
 CartRoute.put("/update",verifyToken,updateCart);
 CartRoute.delete("/remove",verifyToken,removeFromCart);

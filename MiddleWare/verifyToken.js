@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { userModel } from "../Database/Models/user.model.js"; 
 
 export const verifyToken = (req, res,next)=>{
     const token = req.headers["token"];
@@ -13,6 +12,5 @@ export const verifyToken = (req, res,next)=>{
             req.user = decoded;
             next();
         }
-
-    })}
-
+    });
+}
