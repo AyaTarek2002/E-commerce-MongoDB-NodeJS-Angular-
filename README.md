@@ -59,7 +59,7 @@ A live demo of the application is available ....
 - Arwa Emam(https://github.com/arwaemam2)
 ## ERD
 
-![Screenshot from 2025-03-01 14-02-09](https://github.com/user-attachments/assets/b81114af-19da-4120-96bb-6e1b88075ec1)
+![photo_5940506912665748458_y](https://github.com/user-attachments/assets/9dc22402-fa76-4a1c-8467-5a35fb07357c)
 
 ### Step 1: Clone the Repository
 
