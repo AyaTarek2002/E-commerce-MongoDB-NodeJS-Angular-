@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {userModel} from "../../Database/Models/user.model.js";
-import { sendEmail } from "../../Email/Email.js";
+import { sendEmail } from "../../Email/email.js";
 import { catchError } from "../../MiddleWare/catchError.js";
+
+
 //Sign UP
 export const signUp = catchError(
     async (req,res) => {
@@ -32,14 +34,66 @@ async (req,res)=>
             id: foundUser._id,
             name: foundUser.name,
             role: foundUser.role
-        },"myKey"); // secret key is used to sign the token and it's name is hello
+        },
+        process.env.JWT_SECRET, // استخدام المفتاح السري من `.env`
+        { expiresIn: "7d" } // صلاحية التوكن 7 أيام
+    ); // secret key is used to sign the token and it's name is hello
         
         res.status(200).json({message:`welcome ${foundUser.name}`, token});
     }else{
         res.status(401).json({message:"Check your Email to confirm!"});
     }
 })
-//Update User Data
+
+// forgotPassword
+export const forgotPassword = catchError(async (req, res) => {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    // إنشاء توكين صالح لمدة ساعة
+    const token = jwt.sign({ id: user._id }, "mySecretKey", { expiresIn: "1h" });
+
+    // إنشاء رابط إعادة التعيين متضمناً التوكين
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
+
+    // طباعة الرابط في الكونسول بدلاً من إرسال بريد إلكتروني
+    console.log(`🔗 Password Reset Link: ${resetLink}`);
+
+    res.status(200).json({
+        message: "Password reset link generated. Check the console for details.",
+        resetLink
+    });
+});
+//resetPassword
+export const resetPassword = catchError(async (req, res) => {
+    const { token } = req.params; // استلام التوكين من الـ URL
+    const { newPassword } = req.body; // استلام كلمة المرور الجديدة
+
+    try {
+        // فك تشفير التوكين
+        const decoded = jwt.verify(token, "mySecretKey");
+
+        // البحث عن المستخدم بناءً على ID المخزن في التوكين
+        const user = await userModel.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // تحديث كلمة المرور بعد تشفيرها
+        user.password = bcrypt.hashSync(newPassword, 8);
+        await user.save();
+
+        res.status(200).json({ message: "Password has been reset successfully." });
+    } catch (error) {
+        res.status(400).json({ message: "Invalid or expired token" });
+    }
+});
+
+// //Update User Data
 export const updateUserDetails = catchError(async (req, res) => {
     const userID = req.user.id;
     const user = await userModel.findById(userID);
@@ -77,7 +131,7 @@ export const updateUserDetails = catchError(async (req, res) => {
         user: updatedUser
     });
 });
-//Delete User By Admin only
+// //Delete User By Admin only
 export const deleteUser = catchError(async (req, res) =>
 {
     const userID = req.params.id;
@@ -111,20 +165,12 @@ export const verifyEmail =  (req,res) => {
 
 // Get all users (Admin only)
 export const getAllUsers = catchError(async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Unauthorized access" });
-    }
-
     const users = await userModel.find({}, { password: 0 }); // Exclude passwords
     res.status(200).json({ message: "All users retrieved successfully", users });
 });
 
 // Get user by ID (Admin only)
 export const getUserById = catchError(async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Unauthorized access" });
-    }
-
     const user = await userModel.findById(req.params.id, { password: 0 }); // Exclude password
     if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -132,4 +178,24 @@ export const getUserById = catchError(async (req, res) => {
 
     res.status(200).json({ message: "User retrieved successfully", user });
 });
+
+//restrictUserByAdmin
+export const restrictUser = catchError(async (req, res) => {
+    const { userId } = req.params;
+    const { status } = req.body; // "restricted" أو "banned"
+
+    if (!["active", "restricted", "banned"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status value! Use 'active', 'restricted', or 'banned'." });
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(userId, { status }, { new: true });
+
+    if (!updatedUser) {
+        return res.status(404).json({ error: "User not found!" });
+    }
+
+    res.json({ message: `User status updated to ${status}`, user: updatedUser });
+});
+
+
 
