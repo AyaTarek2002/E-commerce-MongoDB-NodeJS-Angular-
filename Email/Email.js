@@ -13,7 +13,7 @@ export async function sendEmail(email) {
             },
         });
 
-        const myemail = jwt.sign( email , "myemail"); 
+        const myemail = jwt.sign( email , process.env.EMAIL_SECRET); 
         const info = await transporter.sendMail({
           from: '"Aliaa Hesham 👻" <aliaammohamed1@gmail.com>',
           to: email,
@@ -21,8 +21,8 @@ export async function sendEmail(email) {
           text: "From E-Commerce App",
           html: emailTemplate(myemail),
       });
-      console.log("✅ Email Sent Successfully: ", info.messageId);
+      console.log(" Email Sent Successfully: ", info.messageId);
     } catch (error) {
-        console.error("❌ Error Sending Email: ", error);
+        console.error(" Error Sending Email: ", error);
     }
 }

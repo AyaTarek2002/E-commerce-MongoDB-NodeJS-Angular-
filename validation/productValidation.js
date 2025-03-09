@@ -18,7 +18,7 @@ const ProductSchema = Joi.object({
     "number.min": "Price must be at least 1",
 }),
   stock: Joi.number()
-  .integer().default(0)
+  .integer().default(0).required()
   .min(0)
   .messages({
     "number.base": "Stock must be a number",
